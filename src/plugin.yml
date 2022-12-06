@@ -1,0 +1,12 @@
+name: NeoReports
+author: Neoblade298
+main: me.neoblade298.neoreports.Main
+version: 1.00
+api-version: 1.14
+commands:
+  neoreport:
+    description: Base commands
+    usage: /report
+  neoreports:
+    description: Base commands
+    usage: /reports
