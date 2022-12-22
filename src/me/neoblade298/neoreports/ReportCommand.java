@@ -4,12 +4,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import me.neoblade298.neoreports.Main;
+import me.neoblade298.neoreports.NeoReports;
 
 public class ReportCommand implements CommandExecutor {
-	Main main;
+	NeoReports main;
 	
-	public ReportCommand(Main main) {
+	public ReportCommand(NeoReports main) {
 		this.main = main;
 	}
 	
@@ -36,7 +36,7 @@ public class ReportCommand implements CommandExecutor {
 				for (int i = 2; i < args.length; i++) {
 					desc += " " + args[i];
 				}
-				Report rep = new Report(Main.nextReport, author, desc.replaceAll("'", "\\\\'"), false);
+				Report rep = new Report(NeoReports.nextReport, author, desc.replaceAll("'", "\\\\'"), false);
 				rep.post(sender);
 				return true;
 			}
@@ -45,7 +45,7 @@ public class ReportCommand implements CommandExecutor {
 				for (int i = 2; i < args.length; i++) {
 					desc += " " + args[i];
 				}
-				Report rep = new Report(Main.nextReport, author, desc.replaceAll("'", "\\\\'"), true);
+				Report rep = new Report(NeoReports.nextReport, author, desc.replaceAll("'", "\\\\'"), true);
 				rep.post(sender);
 				return true;
 			}

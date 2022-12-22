@@ -15,14 +15,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import me.neoblade298.neoreports.Main;
+import me.neoblade298.neoreports.NeoReports;
 
 public class ReportsCommand implements CommandExecutor {
-	Main main;
+	NeoReports main;
 	static int NUM_REPORTS_PER_PAGE = 10;
 	private static DateFormat dateformat = new SimpleDateFormat("MM-dd");
 	
-	public ReportsCommand(Main main) {
+	public ReportsCommand(NeoReports main) {
 		this.main = main;
 	}
 	
@@ -46,7 +46,7 @@ public class ReportsCommand implements CommandExecutor {
 			else if (args.length == 1 && args[0].equalsIgnoreCase("check")) {
 				try {  
 					Class.forName("com.mysql.jdbc.Driver");
-					Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+					Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 					Statement stmt = con.createStatement();
 					ResultSet rs;
 					rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE is_resolved = 0 AND is_urgent = 0;");
@@ -55,7 +55,7 @@ public class ReportsCommand implements CommandExecutor {
 					rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE is_resolved = 0 AND is_urgent = 1;");
 					rs.next();
 					int numUrgent = rs.getInt(1);
-					sender.sendMessage("§4[§c§lMLMC§4] §7# Bugs: §e" + numBugs + "§7, # Urgent: §e" + numUrgent + "§7, # Resolved today: §e" + Main.numResolved);
+					sender.sendMessage("§4[§c§lMLMC§4] §7# Bugs: §e" + numBugs + "§7, # Urgent: §e" + numUrgent + "§7, # Resolved today: §e" + NeoReports.numResolved);
 					con.close();
 				}
 				catch(Exception e) {
@@ -69,7 +69,7 @@ public class ReportsCommand implements CommandExecutor {
 				if (args.length == 1) {
 					try {  
 						Class.forName("com.mysql.jdbc.Driver");
-						Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+						Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 						Statement stmt = con.createStatement();
 						ResultSet rs;
 						rs = stmt.executeQuery("SELECT * FROM neoreports_bugs WHERE user = '" + author + "' ORDER BY id DESC;");
@@ -99,7 +99,7 @@ public class ReportsCommand implements CommandExecutor {
 					int page = Integer.parseInt(args[1]);
 					try {  
 						Class.forName("com.mysql.jdbc.Driver");
-						Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+						Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 						Statement stmt = con.createStatement();
 						ResultSet rs;
 						rs = stmt.executeQuery("SELECT * FROM neoreports_bugs WHERE user = '" + author + "' ORDER BY id DESC;");
@@ -134,7 +134,7 @@ public class ReportsCommand implements CommandExecutor {
 				if (args.length == 2) {
 					try{  
 						Class.forName("com.mysql.jdbc.Driver");
-						Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+						Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 						Statement stmt = con.createStatement();
 						ResultSet rs;
 						rs = stmt.executeQuery("SELECT * FROM neoreports_bugs WHERE is_urgent = 1 AND is_resolved = 0 ORDER BY id DESC;");
@@ -165,7 +165,7 @@ public class ReportsCommand implements CommandExecutor {
 					int page = Integer.parseInt(args[2]);
 					try{  
 						Class.forName("com.mysql.jdbc.Driver");
-						Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+						Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 						Statement stmt = con.createStatement();
 						ResultSet rs;
 						rs = stmt.executeQuery("SELECT * FROM neoreports_bugs WHERE is_urgent = 1 AND is_resolved = 0 ORDER BY id DESC;");
@@ -201,7 +201,7 @@ public class ReportsCommand implements CommandExecutor {
 					if (args.length == 2) {
 						try{  
 							Class.forName("com.mysql.jdbc.Driver");
-							Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+							Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 							Statement stmt = con.createStatement();
 							ResultSet rs;
 							rs = stmt.executeQuery("SELECT * FROM neoreports_bugs WHERE is_urgent = 0 AND is_resolved = 0 ORDER BY id DESC;");
@@ -232,7 +232,7 @@ public class ReportsCommand implements CommandExecutor {
 						int page = Integer.parseInt(args[2]);
 						try{  
 							Class.forName("com.mysql.jdbc.Driver");
-							Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+							Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 							Statement stmt = con.createStatement();
 							ResultSet rs;
 							rs = stmt.executeQuery("SELECT * FROM neoreports_bugs WHERE is_urgent = 0 AND is_resolved = 0 ORDER BY id DESC;");
@@ -267,7 +267,7 @@ public class ReportsCommand implements CommandExecutor {
 					if (args.length == 2) {
 						try{  
 							Class.forName("com.mysql.jdbc.Driver");
-							Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+							Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 							Statement stmt = con.createStatement();
 							ResultSet rs;
 							rs = stmt.executeQuery("SELECT * FROM neoreports_bugs WHERE is_resolved = 1 ORDER BY id DESC;");
@@ -298,7 +298,7 @@ public class ReportsCommand implements CommandExecutor {
 						int page = Integer.parseInt(args[2]);
 						try{  
 							Class.forName("com.mysql.jdbc.Driver");
-							Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+							Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 							Statement stmt = con.createStatement();
 							ResultSet rs;
 							rs = stmt.executeQuery("SELECT * FROM neoreports_bugs WHERE is_resolved = 1 ORDER BY id DESC;");
@@ -338,7 +338,7 @@ public class ReportsCommand implements CommandExecutor {
 					desc = desc.replaceAll("'", "\\\\'");
 					try{  
 						Class.forName("com.mysql.jdbc.Driver");
-						Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+						Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 						Statement stmt = con.createStatement();
 						ResultSet rs;
 						int resolved = stmt.executeUpdate("UPDATE neoreports_bugs SET `is_resolved` = 1, `comment` = '" + desc + "', `resolver` = '" + author + 
@@ -355,12 +355,12 @@ public class ReportsCommand implements CommandExecutor {
 							Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "mail send " + rs.getString(3) + " (" + bug + ") resolved by " + sender.getName() + "! Message: " + comment);
 						}
 						boolean is_urgent = rs.getInt(9) == 1;
-						Main.numResolved++;
+						NeoReports.numResolved++;
 						if (is_urgent) {
-							Main.numUrgent--;
+							NeoReports.numUrgent--;
 						}
 						else {
-							Main.numBugs--;
+							NeoReports.numBugs--;
 						}
 						con.close();
 					}
@@ -373,7 +373,7 @@ public class ReportsCommand implements CommandExecutor {
 				else if (args.length == 2 && args[0].equalsIgnoreCase("unresolve") && StringUtils.isNumeric(args[1])) {
 					try{  
 						Class.forName("com.mysql.jdbc.Driver");
-						Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+						Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 						Statement stmt = con.createStatement();
 						ResultSet rs;
 						int resolved = stmt.executeUpdate("UPDATE neoreports_bugs SET `is_resolved` = 0 WHERE id = " + args[1] + ";");
@@ -387,12 +387,12 @@ public class ReportsCommand implements CommandExecutor {
 						rs.next();
 						boolean is_urgent = rs.getInt(9) == 1;
 						if (is_urgent) {
-							Main.numUrgent++;
+							NeoReports.numUrgent++;
 						}
 						else {
-							Main.numBugs++;
+							NeoReports.numBugs++;
 						}
-						Main.numResolved--;
+						NeoReports.numResolved--;
 						con.close();
 					}
 					catch(Exception e) {
@@ -408,7 +408,7 @@ public class ReportsCommand implements CommandExecutor {
 					}
 					try{  
 						Class.forName("com.mysql.jdbc.Driver");
-						Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
+						Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
 						Statement stmt = con.createStatement();
 						int edited = stmt.executeUpdate("UPDATE neoreports_bugs SET `comment` = '" + desc + "' WHERE id = " + args[1] + ";");
 						if (edited > 0) {

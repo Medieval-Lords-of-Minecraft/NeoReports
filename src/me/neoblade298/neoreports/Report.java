@@ -2,6 +2,7 @@ package me.neoblade298.neoreports;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.util.Date;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Report {
 	private int id;
@@ -112,42 +114,50 @@ public class Report {
 	}
 	
 	public void post(CommandSender p) {
-		int resolved = 0, urgent = 0;
-		if (is_resolved) {
-			resolved = 1;
-		}
-		if (is_urgent) {
-			urgent = 1;
-		}
-		try{  
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection(Main.connection, Main.sqlUser, Main.sqlPass);
-			Statement stmt = con.createStatement();
-			int post = stmt.executeUpdate("INSERT INTO neoreports_bugs VALUES (" + id + ",'" + date + "','" + user + "','" + description +
-					"','" + comment + "','" + resolver + "','" + fixdate + "','" +  resolved + "','" + urgent +"')");
-			if (post > 0) {
-				p.sendMessage("§4[§c§lMLMC§4] §7Successfully posted report!");
-				Main.nextReport++;
-				if(is_urgent) {
-					Main.numUrgent++;
-					for (Player staff : Bukkit.getOnlinePlayers()) {
-						if (staff.hasPermission("neoreports.admin")) {
-							staff.sendMessage("§4[§c§lMLMC§4] §c§lAn urgent bug report was just posted!");
+		new BukkitRunnable() {
+			public void run() {
+				int resolved = 0, urgent = 0;
+				if (is_resolved) {
+					resolved = 1;
+				}
+				if (is_urgent) {
+					urgent = 1;
+				}
+				try{  
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
+					Statement stmt = con.createStatement();
+					int post = stmt.executeUpdate("INSERT INTO neoreports_bugs VALUES (" + id + ",'" + date + "','" + user + "','" + description +
+							"','" + comment + "','" + resolver + "','" + fixdate + "','" +  resolved + "','" + urgent +"')");
+					if (post > 0) {
+						p.sendMessage("§4[§c§lMLMC§4] §7Successfully posted report!");
+						NeoReports.nextReport++;
+						if(is_urgent) {
+							NeoReports.numUrgent++;
+							for (Player staff : Bukkit.getOnlinePlayers()) {
+								if (staff.hasPermission("neoreports.admin")) {
+									staff.sendMessage("§4[§c§lMLMC§4] §c§lAn urgent bug report was just posted!");
+								}
+							}
+						}
+						else {
+							NeoReports.numBugs++;
 						}
 					}
+					else {
+						p.sendMessage("§4[§c§lMLMC§4] §7Failed to post report!");
+					}
+					con.close();
 				}
-				else {
-					Main.numBugs++;
+				catch (SQLIntegrityConstraintViolationException e) {
+					id++;
+					post(p);
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					p.sendMessage("§4[§c§lMLMC§4] §7Failed to post report!");
 				}
 			}
-			else {
-				p.sendMessage("§4[§c§lMLMC§4] §7Failed to post report!");
-			}
-			con.close();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			p.sendMessage("§4[§c§lMLMC§4] §cSomething went wrong! Report to neo and don't use the plugin anymore!");
-		}
+		}.runTaskAsynchronously(NeoReports.inst());
 	}
 }

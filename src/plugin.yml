@@ -1,6 +1,6 @@
 name: NeoReports
 author: Neoblade298
-main: me.neoblade298.neoreports.Main
+main: me.neoblade298.neoreports.NeoReports
 version: 1.00
 api-version: 1.14
 commands:
