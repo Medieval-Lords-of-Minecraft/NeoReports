@@ -352,7 +352,7 @@ public class ReportsCommand implements CommandExecutor {
 						rs = stmt.executeQuery("SELECT * FROM neoreports_bugs WHERE id = " + args[1] + ";");
 						if (rs.next()) {
 							String bug = rs.getString(4);
-							Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "mail send " + rs.getString(3) + " (" + bug + ") resolved by " + sender.getName() + "! Message: " + comment);
+							Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "bcore cmd mail " + rs.getString(3) + " (" + bug + ") resolved by " + sender.getName() + "! Message: " + comment);
 						}
 						boolean is_urgent = rs.getInt(9) == 1;
 						NeoReports.numResolved++;
