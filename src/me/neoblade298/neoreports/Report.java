@@ -6,6 +6,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.bukkit.Bukkit;
@@ -17,7 +18,8 @@ public class Report {
 	private int id;
 	private String date, user, description, comment, resolver, fixdate;
 	private boolean is_resolved, is_urgent;
-	private static DateFormat dateformat = new SimpleDateFormat("MM-dd HH:mm:ss");
+	public static final DateFormat dateformat = new SimpleDateFormat("MM-dd HH:mm:ss");
+	public static final DateTimeFormatter fixformat = DateTimeFormatter.ofPattern("MM-DD");
 	
 	public Report(int id, String user, String description, boolean is_urgent) {
 		this.id = id;

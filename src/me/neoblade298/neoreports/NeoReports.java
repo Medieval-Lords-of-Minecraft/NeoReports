@@ -1,6 +1,8 @@
 package me.neoblade298.neoreports;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -78,6 +80,10 @@ public class NeoReports extends JavaPlugin implements org.bukkit.event.Listener 
 						rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE is_resolved = 0 AND is_urgent = 1;");
 						rs.next();
 						int numUrgent = rs.getInt(1);
+						
+						String today = Report.fixformat.format(LocalDateTime.now());
+						String yesterday = Report.fixformat.format(LocalDateTime.now().minus(1, ChronoUnit.DAYS));
+						rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE fixdate = '" + today + "' OR fixdate = '" + yesterday + "';");
 						p.sendMessage("§4[§c§lMLMC§4] §7# Bugs: §e" + numBugs + "§7, # Urgent: §e" + numUrgent + "§7, # Resolved today: §e" + NeoReports.numResolved);
 						con.close();
 						if (numUrgent > 0) {
