@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Stack;
 
@@ -53,36 +51,7 @@ public class ReportsCommand implements CommandExecutor {
 			else if (args.length == 1 && args[0].equalsIgnoreCase("check")) {
 				new BukkitRunnable() {
 					public void run() {
-						try {
-							Class.forName("com.mysql.jdbc.Driver");
-							Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser,
-									NeoReports.sqlPass);
-							Statement stmt = con.createStatement();
-							ResultSet rs;
-							rs = stmt.executeQuery(
-									"SELECT COUNT(*) FROM neoreports_bugs WHERE is_resolved = 0 AND is_urgent = 0;");
-							rs.next();
-							int numBugs = rs.getInt(1);
-							rs = stmt.executeQuery(
-									"SELECT COUNT(*) FROM neoreports_bugs WHERE is_resolved = 0 AND is_urgent = 1;");
-							rs.next();
-							int numUrgent = rs.getInt(1);
-
-							String today = Report.fixformat.format(LocalDateTime.now());
-							String yesterday = Report.fixformat.format(LocalDateTime.now().minus(1, ChronoUnit.DAYS));
-							rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE fixdate = '" + today
-									+ "' OR fixdate = '" + yesterday + "';");
-							rs.next();
-							int numResolved = rs.getInt(1);
-							sender.sendMessage("§4[§c§lMLMC§4] §7# Bugs: §e" + numBugs + "§7, # Urgent: §e" + numUrgent
-									+ "§7, # Resolved recently: §e" + numResolved);
-							rs.close();
-							con.close();
-						} catch (Exception e) {
-							e.printStackTrace();
-							sender.sendMessage(
-									"§4[§c§lMLMC§4] §cSomething went wrong! Maybe use fewer special characters?");
-						}
+						NeoReports.checkReports(sender);
 					}
 				}.runTaskAsynchronously(NeoReports.inst());
 				return true;

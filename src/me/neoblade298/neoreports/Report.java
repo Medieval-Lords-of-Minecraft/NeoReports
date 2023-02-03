@@ -19,7 +19,7 @@ public class Report {
 	private String date, user, description, comment, resolver, fixdate;
 	private boolean is_resolved, is_urgent;
 	public static final DateFormat dateformat = new SimpleDateFormat("MM-dd HH:mm:ss");
-	public static final DateTimeFormatter fixformat = DateTimeFormatter.ofPattern("MM-DD");
+	public static final DateTimeFormatter fixformat = DateTimeFormatter.ofPattern("MM-dd");
 	
 	public Report(int id, String user, String description, boolean is_urgent) {
 		this.id = id;

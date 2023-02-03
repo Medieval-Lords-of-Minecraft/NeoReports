@@ -2,9 +2,9 @@ package me.neoblade298.neoreports;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -69,32 +69,7 @@ public class NeoReports extends JavaPlugin implements org.bukkit.event.Listener 
 		if (p.hasPermission("neoreports.admin")) {
 	    	BukkitRunnable joinTask = new BukkitRunnable() {
 				public void run() {
-					try{  
-						Class.forName("com.mysql.jdbc.Driver");
-						Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
-						Statement stmt = con.createStatement();
-						ResultSet rs;
-						rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE is_resolved = 0 AND is_urgent = 0;");
-						rs.next();
-						int numBugs = rs.getInt(1);
-						rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE is_resolved = 0 AND is_urgent = 1;");
-						rs.next();
-						int numUrgent = rs.getInt(1);
-						
-						String today = Report.fixformat.format(LocalDateTime.now());
-						String yesterday = Report.fixformat.format(LocalDateTime.now().minus(1, ChronoUnit.DAYS));
-						rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE fixdate = '" + today + "' OR fixdate = '" + yesterday + "';");
-						p.sendMessage("§4[§c§lMLMC§4] §7# Bugs: §e" + numBugs + "§7, # Urgent: §e" + numUrgent + "§7, # Resolved today: §e" + NeoReports.numResolved);
-						con.close();
-						if (numUrgent > 0) {
-							// Double check that the number is urgent
-							p.sendMessage("§4[§c§lMLMC§4] §c§lThere are unfixed urgent bugs!");
-						}
-					}
-					catch(Exception e) {
-						e.printStackTrace();
-					}
-
+					checkReports(p);
 				}
 			};
 			joinTask.runTaskLater(this, 100L);
@@ -105,4 +80,31 @@ public class NeoReports extends JavaPlugin implements org.bukkit.event.Listener 
 		return inst;
 	}
 	
+	public static void checkReports(CommandSender viewer) {
+		try{  
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection(NeoReports.connection, NeoReports.sqlUser, NeoReports.sqlPass);
+			Statement stmt = con.createStatement();
+			ResultSet rs;
+			rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE is_resolved = 0 AND is_urgent = 0;");
+			rs.next();
+			int numBugs = rs.getInt(1);
+			rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE is_resolved = 0 AND is_urgent = 1;");
+			rs.next();
+			int numUrgent = rs.getInt(1);
+			
+			String today = Report.fixformat.format(LocalDateTime.now());
+			rs = stmt.executeQuery("SELECT COUNT(*) FROM neoreports_bugs WHERE fixdate = '" + today + "';");
+			int fixed = rs.next() ? rs.getInt(1) : 0;
+			viewer.sendMessage("§4[§c§lMLMC§4] §7# Bugs: §e" + numBugs + "§7, # Urgent: §e" + numUrgent + "§7, # Resolved today: §e" + fixed);
+			con.close();
+			if (numUrgent > 0) {
+				// Double check that the number is urgent
+				viewer.sendMessage("§4[§c§lMLMC§4] §c§lThere are unfixed urgent bugs!");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
