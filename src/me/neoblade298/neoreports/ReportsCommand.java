@@ -21,7 +21,7 @@ import me.neoblade298.neoreports.NeoReports;
 public class ReportsCommand implements CommandExecutor {
 	NeoReports main;
 	static int NUM_REPORTS_PER_PAGE = 10;
-	private static DateFormat dateformat = new SimpleDateFormat("MM-dd");
+	private static DateFormat dateformat = new SimpleDateFormat("MM-dd-yyyy");
 
 	public ReportsCommand(NeoReports main) {
 		this.main = main;
